@@ -1,21 +1,100 @@
 import mock from "./mock.json";
 import { v4 as uuidv4 } from "uuid";
 const { markets, communitys } = mock;
+const API_BASE_URL = "http://localhost:4000"; // 실제 백엔드 API URL로 변경하세요.
 
 function filterByKeyword(items, keyword) {
   const lowered = keyword.toLowerCase();
   return items.filter(({ title }) => title.toLowerCase().includes(lowered));
 }
 
-export function getMarkets(keyword) {
-  const markets = JSON.parse(localStorage.getItem("markets")) || [];
-  if (!keyword) return markets;
-  return filterByKeyword(markets, keyword);
+// 스마트팜 데이터 가져오기 함수 추가
+export async function getSmartFarmData() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/smartfarm`);
+    if (!response.ok) {
+      throw new Error("스마트팜 데이터를 가져올 수 없습니다.");
+    }
+    const data = await response.json();
+    return data[0];
+  } catch (error) {
+    console.error("스마트팜 데이터를 가져오는 중 오류 발생:", error);
+    return null;
+  }
+}
+
+// 마켓 리스트 가져오기
+export async function getMarkets(keyword) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/markets`);
+    const data = await response.json();
+
+    if (keyword) {
+      const lowered = keyword.toLowerCase();
+      return data.filter(({ title }) => title.toLowerCase().includes(lowered));
+    }
+
+    return data;
+  } catch (error) {
+    console.error("마켓 데이터를 가져오는 중 오류 발생:", error);
+    return [];
+  }
+}
+
+// 특정 마켓 아이템 가져오기
+export async function getMarketById(marketId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/markets/${marketId}`);
+    if (!response.ok) {
+      throw new Error("마켓 아이템을 가져올 수 없습니다.");
+    }
+    const market = await response.json();
+    return market;
+  } catch (error) {
+    console.error("마켓 아이템을 가져오는 중 오류 발생:", error);
+    return null;
+  }
+}
+
+// 마켓 아이템 추가하기
+export async function addMarket(marketData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/markets`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(marketData),
+    });
+    if (!response.ok) {
+      throw new Error("마켓 아이템을 추가할 수 없습니다.");
+    }
+    const newMarket = await response.json();
+    return newMarket;
+  } catch (error) {
+    console.error("마켓 아이템을 추가하는 중 오류 발생:", error);
+    return null;
+  }
+}
+
+// 마켓 아이템 삭제하기
+export async function deleteMarket(id) {
+  try {
+    await fetch(`${API_BASE_URL}/markets/${id}`, {
+      method: "DELETE",
+    });
+    return true;
+  } catch (error) {
+    console.error("마켓 아이템을 삭제하는 중 오류 발생:", error);
+    return false;
+  }
 }
 
 export function getMarketBySlug(marketSlug) {
   return markets.find((market) => market.slug === marketSlug);
 }
+
+// 커뮤니티 관련 함수들 (필요한 경우에만 수정)
 
 export function getCommunitys(keyword) {
   if (!keyword) return communitys;
@@ -86,6 +165,7 @@ export function addCommunity({ title, content, image, writer }) {
   return newCommunity;
 }
 
+// 위시리스트 관련 함수들
 const WISHLIST_KEY = "codethat-wishlist";
 
 export function getWishlistSlugs() {
@@ -115,71 +195,4 @@ export function deleteWishlist(marketSlug) {
   let wishlist = getWishlistSlugs();
   wishlist = wishlist.filter((slug) => slug !== marketSlug);
   localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
-}
-
-// 마켓 게시물 ID로 가져오기 함수 추가
-export function getMarketById(marketId) {
-  const markets = JSON.parse(localStorage.getItem("markets")) || [];
-  return markets.find((market) => market.id === marketId);
-}
-
-// 새로운 기능 추가: 마켓 게시물 추가하기
-export function addMarket({
-  title,
-  content,
-  crop,
-  price,
-  location,
-  farmName,
-  cultivationPeriod,
-  hashtags = [], // 기본값을 빈 배열로 설정
-  image,
-  writer,
-}) {
-  if (!writer || !writer.id) {
-    throw new Error("로그인이 필요합니다.");
-  }
-
-  let markets = JSON.parse(localStorage.getItem("markets")) || [];
-
-  const newMarket = {
-    id: uuidv4(),
-    title,
-    content,
-    crop,
-    price,
-    location,
-    farmName,
-    cultivationPeriod,
-    hashtags,
-    image,
-    writer: {
-      id: writer.id,
-      name: writer.name,
-      profile: { photo: writer.profile?.photo || "default_avatar.svg" },
-    },
-    createdAt: new Date().toISOString(),
-  };
-
-  // 중복 확인
-  const isDuplicate = markets.some(
-    (market) =>
-      market.title === newMarket.title && market.content === newMarket.content
-  );
-
-  if (isDuplicate) {
-    console.warn("중복된 게시물이 발견되었습니다. 추가하지 않습니다.");
-    return null;
-  }
-
-  markets.unshift(newMarket);
-  localStorage.setItem("markets", JSON.stringify(markets));
-
-  return newMarket;
-}
-
-export function deleteMarket(id) {
-  let markets = JSON.parse(localStorage.getItem("markets")) || [];
-  markets = markets.filter((market) => market.id !== id);
-  localStorage.setItem("markets", JSON.stringify(markets));
 }

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "title": "고당도 당근 팝니다",
+    "content": "맛있어요",
+    "crop": "당근",
+    "price": "3",
+    "location": "서울",
+    "farmName": "숭실대팜",
+    "cultivationPeriod": "5일",
+    "hashtags": ["당근", "맛있어요"],
+    "image": "이미지 URL 또는 데이터",
+    "createdAt": "2024-10-23T13:14:05.985Z",
+    "writer": {
+      "id": 2,
+      "name": "시운시운",
+      "profile": {
+        "photo": "default_avatar.svg"
+      }
+    }
+  },
+  {
+    "id": "2",
+    "title": "신선한 토마토 팝니다",
+    "content": "당일 수확",
+    "crop": "토마토",
+    "price": "5",
+    "location": "경기",
+    "farmName": "경기농장",
+    "cultivationPeriod": "7일",
+    "hashtags": ["토마토", "신선"],
+    "image": "이미지 URL 또는 데이터",
+    "createdAt": "2024-10-22T11:10:00.000Z",
+    "writer": {
+      "id": 3,
+      "name": "농부김",
+      "profile": {
+        "photo": "default_avatar.svg"
+      }
+    }
+  }
+]
