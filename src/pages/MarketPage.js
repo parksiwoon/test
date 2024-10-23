@@ -4,12 +4,29 @@ import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { getMarketById, deleteMarket, addWishlist } from "../api";
 import styles from "./MarketPage.module.css";
 import { useAuth } from "../contexts/AuthProvider";
+import { useEffect, useState } from "react";
 
 function MarketPage() {
   const { marketId } = useParams();
-  const market = getMarketById(marketId);
+  const [market, setMarket] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchMarket = async () => {
+      setLoading(true);
+      const data = await getMarketById(marketId);
+      setMarket(data);
+      setLoading(false);
+    };
+
+    fetchMarket();
+  }, [marketId]);
+
+  if (loading) {
+    return <p>로딩 중...</p>;
+  }
 
   if (!market) {
     return <Navigate to="/markets" />;

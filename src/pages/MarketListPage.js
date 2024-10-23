@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import ListPage from "../components/ListPage";
 import Warn from "../components/Warn";
 import MarketItem from "../components/MarketItem";
-import { getMarkets, addMarket } from "../api"; // addMarket 함수 추가
+import { getMarkets, addMarket, getSmartFarmData } from "../api"; // addMarket 함수 추가
 import styles from "./MarketListPage.module.css";
 import searchBarStyles from "../components/SearchBar.module.css";
 import searchIcon from "../assets/search.svg";
@@ -14,6 +14,8 @@ function MarketListPage() {
   const initKeyword = searchParam.get("keyword");
   const [keyword, setKeyword] = useState(initKeyword || "");
   const [markets, setMarkets] = useState([]);
+  const [smartFarmData, setSmartFarmData] = useState(null);
+  const [loading, setLoading] = useState(true); // 로딩 상태 추가
 
   // 추가: 게시물 등록을 위한 상태들
   const [title, setTitle] = useState("");
@@ -29,6 +31,7 @@ function MarketListPage() {
 
   const { user } = useAuth(); // 로그인한 사용자 정보
 
+  /** 
   useEffect(() => {
     const storedMarkets = JSON.parse(localStorage.getItem("markets")) || [];
     const filteredMarkets = initKeyword
@@ -38,6 +41,43 @@ function MarketListPage() {
       : storedMarkets;
     setMarkets(filteredMarkets);
   }, [initKeyword]);
+  */
+
+  useEffect(() => {
+    const fetchSmartFarmData = async () => {
+      console.log("스마트팜 데이터 가져오기 시작");
+      try {
+        const data = await getSmartFarmData();
+        console.log("가져온 스마트팜 데이터:", data);
+        if (data) {
+          setSmartFarmData(data);
+          // 폼 상태를 스마트팜 데이터로 설정
+          setTitle(data.title || "");
+          setContent(data.content || "");
+          setCrop(data.crop || "");
+          setPrice(data.price || "");
+          setLocation(data.location || "");
+          setFarmName(data.farmName || "");
+          setCultivationPeriod(data.cultivationPeriod || "");
+          setHashtags(data.hashtags || []);
+          setImage(data.image || null);
+          // 각 상태 변수에 대한 로그 추가
+          console.log("title 상태:", data.title);
+          console.log("content 상태:", data.content);
+        }
+      } catch (error) {
+        console.error("스마트팜 데이터 가져오기 오류:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSmartFarmData();
+  }, []);
+
+  if (loading) {
+    return <p>스마트팜 데이터를 불러오는 중입니다...</p>;
+  }
 
   const handleKeywordChange = (e) => setKeyword(e.target.value);
   const handleSubmit = (e) => {

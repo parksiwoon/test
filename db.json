@@ -1,0 +1,87 @@
+{
+  "markets": [
+    {
+      "id": "9013",
+      "title": "제목",
+      "content": "설명",
+      "crop": "재배",
+      "price": "3",
+      "location": "서울",
+      "farmName": "농장",
+      "cultivationPeriod": "재배기간",
+      "hashtags": [
+        "해시",
+        "태그"
+      ],
+      "image": null,
+      "writer": {
+        "id": 2,
+        "name": "시운시운",
+        "profile": {
+          "photo": "default_avatar.svg"
+        }
+      }
+    },
+    {
+      "id": "2056",
+      "title": "자동 등록된 작물 데이터",
+      "content": "이 데이터는 스마트팜에서 가져왔습니다.",
+      "crop": "토마토",
+      "price": "15",
+      "location": "강원도",
+      "farmName": "스마트팜 1호기",
+      "cultivationPeriod": "45일",
+      "hashtags": [
+        "토마토",
+        "친환경"
+      ],
+      "image": "https://example.com/smartfarm-image.jpg",
+      "writer": {
+        "id": 2,
+        "name": "시운시운",
+        "profile": {
+          "photo": "default_avatar.svg"
+        }
+      }
+    },
+    {
+      "id": "c75d",
+      "title": "자동 등록된 작물 데이터",
+      "content": "이 데이터는 스마트팜에서 가져왔습니다.",
+      "crop": "토마토",
+      "price": "15",
+      "location": "강원도",
+      "farmName": "스마트팜 1호기",
+      "cultivationPeriod": "45일",
+      "hashtags": [
+        "토마토",
+        "친환경"
+      ],
+      "image": "https://example.com/smartfarm-image.jpg",
+      "writer": {
+        "id": 2,
+        "name": "시운시운",
+        "profile": {
+          "photo": "default_avatar.svg"
+        }
+      }
+    }
+  ],
+  "smartfarm": [
+    {
+      "id": 1,
+      "title": "자동 등록된 작물 데이터",
+      "content": "이 데이터는 스마트팜에서 가져왔습니다.",
+      "crop": "토마토",
+      "price": "15",
+      "location": "강원도",
+      "farmName": "스마트팜 1호기",
+      "cultivationPeriod": "45일",
+      "hashtags": [
+        "토마토",
+        "친환경"
+      ],
+      "image": "https://example.com/smartfarm-image.jpg"
+    }
+  ]
+}
